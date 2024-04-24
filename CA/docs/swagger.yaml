@@ -1,0 +1,91 @@
+definitions:
+  models.CABody:
+    properties:
+      certificates:
+        example:
+        - intranet.example.com
+        - w3.example.com
+        items:
+          type: string
+        type: array
+      common_name:
+        example: root-ca
+        type: string
+      csr:
+        example: false
+        type: boolean
+      dns_names:
+        example:
+        - ca.example.ca
+        - root-ca.example.com
+        items:
+          type: string
+        type: array
+      expire_date:
+        example: 2022-01-06 10:31:43 +0000 UTC
+        type: string
+      intermediate:
+        type: boolean
+      issue_date:
+        example: 2021-01-06 10:31:43 +0000 UTC
+        type: string
+      revoked_certificates:
+        example:
+        - "38188836191244388427366318074605547405"
+        - "338255903472757769326153358304310617728"
+        items:
+          type: string
+        type: array
+      serial_number:
+        example: "271064285308788403797280326571490069716"
+        type: string
+      status:
+        example: Certificate Authority is ready.
+        type: string
+    type: object
+  models.ResponseError:
+    properties:
+      error:
+        example: error message
+        type: string
+    type: object
+info:
+  contact:
+    name: GoCA API Issues Report
+    url: http://github.com/kairoaraujo/goca/issues
+  description: GoCA Certificate Authority Management API.
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  title: GoCA API
+paths:
+  /api/v1/ca/{cn}/certificates/{certificate_cn}:
+    delete:
+      consumes:
+      - application/json
+      description: the Certificate Authority revokes a managed Certificate
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.CABody'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/models.ResponseError'
+        "500":
+          description: Internal Server Error
+          schema:
+            type: Internal
+      summary: CA revoke a existent certificate managed by CA
+      tags:
+      - CA/{CN}/Certificates
+schemes:
+- http
+- https
+securityDefinitions:
+  BasicAuth:
+    type: basic
+swagger: "2.0"

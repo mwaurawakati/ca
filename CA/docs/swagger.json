@@ -1,0 +1,134 @@
+{
+    "schemes": [
+        "http",
+        "https"
+    ],
+    "swagger": "2.0",
+    "info": {
+        "description": "GoCA Certificate Authority Management API.",
+        "title": "GoCA API",
+        "contact": {
+            "name": "GoCA API Issues Report",
+            "url": "http://github.com/kairoaraujo/goca/issues"
+        },
+        "license": {
+            "name": "MIT",
+            "url": "https://opensource.org/licenses/MIT"
+        }
+    },
+    "paths": {
+        "/api/v1/ca/{cn}/certificates/{certificate_cn}": {
+            "delete": {
+                "description": "the Certificate Authority revokes a managed Certificate",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "CA/{CN}/Certificates"
+                ],
+                "summary": "CA revoke a existent certificate managed by CA",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.CABody"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ResponseError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "Internal"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "models.CABody": {
+            "type": "object",
+            "properties": {
+                "certificates": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": [
+                        "intranet.example.com",
+                        "w3.example.com"
+                    ]
+                },
+                "common_name": {
+                    "type": "string",
+                    "example": "root-ca"
+                },
+                "csr": {
+                    "type": "boolean",
+                    "example": false
+                },
+                "dns_names": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": [
+                        "ca.example.ca",
+                        "root-ca.example.com"
+                    ]
+                },
+                "expire_date": {
+                    "type": "string",
+                    "example": "2022-01-06 10:31:43 +0000 UTC"
+                },
+                "intermediate": {
+                    "type": "boolean"
+                },
+                "issue_date": {
+                    "type": "string",
+                    "example": "2021-01-06 10:31:43 +0000 UTC"
+                },
+                "revoked_certificates": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": [
+                        "38188836191244388427366318074605547405",
+                        "338255903472757769326153358304310617728"
+                    ]
+                },
+                "serial_number": {
+                    "type": "string",
+                    "example": "271064285308788403797280326571490069716"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "Certificate Authority is ready."
+                }
+            }
+        },
+        "models.ResponseError": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "error message"
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "BasicAuth": {
+            "type": "basic"
+        }
+    }
+}

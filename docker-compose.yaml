@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+  mysql_ca:
+    image: mysql:latest
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_DATABASE: ca
+      MYSQL_USER: ca
+      MYSQL_PASSWORD: 123456
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_ca_data:/var/lib/mysql
+
+  mysql_casdoor:
+    image: mysql:latest
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_DATABASE: casdoor
+      MYSQL_USER: casdoor
+      MYSQL_PASSWORD: 123456
+    ports:
+      - "3308:3306"
+    volumes:
+      - mysql_casdoor_data:/var/lib/mysql
+
+  ca:
+    build: ./CA
+    restart: always
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql_ca
+      - casdoor
+    environment:
+      MYSQL_HOST: mysql_ca
+      MYSQL_PORT: 3306
+      MYSQL_USER: ca
+      MYSQL_PASSWORD: 123456
+      CASDOOR_HOST: mycasdoorhostname 
+
+  casdoor:
+    build: ./casdoor
+    restart: always
+    ports:
+      - "8000:8000"
+    depends_on:
+      - mysql_casdoor
+    environment:
+      MYSQL_HOST: mysql_casdoor
+      MYSQL_PORT: 3306
+      MYSQL_USER: casdoor
+      MYSQL_PASSWORD: 123456
+    hostname: mycasdoorhostname 
+
+volumes:
+  mysql_ca_data:
+  mysql_casdoor_data:
